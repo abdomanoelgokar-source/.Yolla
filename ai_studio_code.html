@@ -3,183 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مفاجأة ليولا</title>
-    <!-- مكتبة الألوان المتطايرة (Confetti) -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <title>مفاجأة ليولا 💖</title>
+    <!-- مكتبة لعمل تأثير الفرقعة (Confetti) -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
+        /* إعدادات الخلفية والخطوط */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffdae9; /* لون بينك هادئ */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-            background: #fce4ec; transition: 1s;
-            background-size: cover; background-position: center;
         }
 
-        /* شاشة الدخول */
-        #login-screen {
-            text-align: center; background: white; padding: 30px;
-            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        /* حاوية إدخال الرقم السري */
+        #login-container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.3);
             z-index: 10;
+            transition: all 0.5s ease;
+        }
+
+        h2 {
+            color: #ff4d94;
+            margin-bottom: 20px;
         }
 
         input {
-            padding: 12px; border: 2px solid #ff4081; border-radius: 10px;
-            font-size: 18px; outline: none; text-align: center; width: 200px;
+            padding: 12px;
+            width: 200px;
+            border: 2px solid #ffb3d1;
+            border-radius: 10px;
+            outline: none;
+            text-align: center;
+            font-size: 18px;
+            color: #ff4d94;
         }
 
         button {
-            padding: 12px 25px; background: #ff4081; color: white;
-            border: none; border-radius: 10px; cursor: pointer;
-            font-size: 18px; margin-top: 10px; transition: 0.3s;
+            padding: 12px 25px;
+            margin-top: 15px;
+            background-color: #ff4d94;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
         }
 
-        button:hover { background: #e91e63; }
-
-        /* منطقة المفاجأة */
-        #surprise-area {
-            display: none; text-align: center; animation: fadeIn 2s;
+        button:hover {
+            background-color: #ff1a75;
+            transform: scale(1.05);
         }
 
-        .message {
-            font-size: 4rem; color: #d81b60; text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-            font-weight: bold; margin-bottom: 20px;
+        /* حاوية الرسالة المفاجئة */
+        #surprise-container {
+            display: none;
+            text-align: center;
         }
 
-        .heart { font-size: 100px; color: red; animation: beat 0.8s infinite; }
-
-        @keyframes beat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+        /* نص "بعشقك يا يولا" الملون والمتحرك */
+        .animated-text {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #ff0080, #ff8c00, #40e0d0, #ff0080);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textFlow 3s linear infinite, bounce 2s infinite;
+            display: inline-block;
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* الزر السري ولوحة التحكم */
-        #secret-trigger {
-            position: fixed; bottom: 10px; right: 10px; width: 20px; height: 20px;
-            background: rgba(0,0,0,0.05); cursor: pointer; border-radius: 50%;
+        /* حركة الألوان */
+        @keyframes textFlow {
+            to { background-position: 200% center; }
         }
 
-        #settings-panel {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); background: white;
-            padding: 20px; border-radius: 15px; box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            z-index: 100; text-align: center;
+        /* حركة القفز المبهجة */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
-        .user-photo {
-            max-width: 300px; border-radius: 15px; margin-top: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none;
+        /* إضافة قلوب في الخلفية */
+        .heart {
+            position: absolute;
+            color: #ff4d94;
+            font-size: 20px;
+            animation: float 5s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            from { transform: translateY(100vh); opacity: 1; }
+            to { transform: translateY(-10vh); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- شاشة طلب كلمة السر -->
-    <div id="login-screen">
-        <h2 style="color: #ff4081;">مرحباً يا جميلة ❤️</h2>
-        <p>أدخلي كلمة السر لرؤية المفاجأة:</p>
-        <input type="password" id="pass1" placeholder="كلمة المرور...">
+    <!-- حاوية الدخول -->
+    <div id="login-container">
+        <h2>أدخلي الرقم السري يا قمر 💖</h2>
+        <input type="password" id="passwordInput" placeholder="الرقم السري هنا...">
         <br>
-        <button onclick="checkPass1()">فتح المفاجأة</button>
+        <button onclick="checkPassword()">دخول ✨</button>
+        <p id="error-msg" style="color: red; margin-top: 10px; display: none;">الرقم غلط يا يولا! ركزي 😉</p>
     </div>
 
-    <!-- منطقة المفاجأة -->
-    <div id="surprise-area">
-        <div class="message" id="display-text">بعشقك يا يولا</div>
-        <div class="heart">❤️</div>
-        <img id="yola-photo" class="user-photo" src="" alt="Yola">
-    </div>
-
-    <!-- المفتاح السري (موجود في الزاوية اليمنى بالأسفل، غير ظاهر تقريباً) -->
-    <div id="secret-trigger" onclick="openSettings()"></div>
-
-    <!-- لوحة تحكم لتغيير الصورة والخلفية -->
-    <div id="settings-panel">
-        <h3>لوحة تحكم السرية</h3>
-        <input type="text" id="bg-url" placeholder="رابط صورة الخلفية"><br><br>
-        <input type="text" id="img-url" placeholder="رابط صورة يولا"><br><br>
-        <button onclick="saveSettings()">حفظ التغييرات</button>
-        <button onclick="closeSettings()" style="background: gray;">إغلاق</button>
+    <!-- حاوية المفاجأة -->
+    <div id="surprise-container">
+        <h1 class="animated-text">بعشقك يا يولا ❤️✨</h1>
     </div>
 
     <script>
-        // التحقق من كلمة السر الأولى للمفاجأة
-        function checkPass1() {
-            const pass = document.getElementById('pass1').value;
-            if (pass === "2762006") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('surprise-area').style.display = 'block';
+        function checkPassword() {
+            const pass = document.getElementById('passwordInput').value;
+            const correctPass = "2772026";
+
+            if (pass === correctPass) {
+                // إخفاء صندوق الدخول
+                document.getElementById('login-container').style.display = 'none';
                 
-                // تشغيل الألوان (الكونفيتي)
-                celebrate();
+                // إظهار المفاجأة
+                const surprise = document.getElementById('surprise-container');
+                surprise.style.display = 'block';
+
+                // تشغيل تأثير الفرقعة (Confetti)
+                fireCelebration();
                 
-                // تغيير الخلفية لألوان مبهجة
-                document.body.style.background = "linear-gradient(45deg, #fce4ec, #f8bbd0, #f48fb1)";
-                document.body.style.backgroundSize = "400% 400%";
-                document.body.style.animation = "gradientBG 10s ease infinite";
+                // إضافة قلوب متحركة
+                setInterval(createHeart, 300);
+
             } else {
-                alert("كلمة المرور خاطئة يا روحي!");
+                document.getElementById('error-msg').style.display = 'block';
             }
         }
 
-        // وظيفة الاحتفال
-        function celebrate() {
-            var duration = 15 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+        // دالة الفرقعات الملونة
+        function fireCelebration() {
+            var duration = 5 * 1000;
+            var end = Date.now() + duration;
 
-            function randomInRange(min, max) {
-              return Math.random() * (max - min) + min;
-            }
+            (function frame() {
+                confetti({
+                    particleCount: 7,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff0080', '#ffb3d1', '#ffffff', '#ff4d94']
+                });
+                confetti({
+                    particleCount: 7,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff0080', '#ffb3d1', '#ffffff', '#ff4d94']
+                });
 
-            var interval = setInterval(function() {
-              var timeLeft = animationEnd - Date.now();
-              if (timeLeft <= 0) { return clearInterval(interval); }
-              var particleCount = 50 * (timeLeft / duration);
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
         }
 
-        // فتح لوحة التحكم بالسر الثاني
-        function openSettings() {
-            const pass = prompt("أدخل كلمة السر السرية:");
-            if (pass === "2732007") {
-                document.getElementById('settings-panel').style.display = 'block';
-            } else {
-                alert("غير مسموح لك!");
-            }
-        }
+        // دالة إنشاء القلوب في الخلفية
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
 
-        function closeSettings() {
-            document.getElementById('settings-panel').style.display = 'none';
-        }
-
-        // حفظ الصورة والخلفية
-        function saveSettings() {
-            const bg = document.getElementById('bg-url').value;
-            const img = document.getElementById('img-url').value;
-
-            if(bg) document.body.style.backgroundImage = `url('${bg}')`;
-            if(img) {
-                const photo = document.getElementById('yola-photo');
-                photo.src = img;
-                photo.style.display = 'inline-block';
-            }
-            closeSettings();
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
         }
     </script>
-
-    <style>
-        /* إضافة حركة للخلفية الملونة */
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-    </style>
 </body>
 </html>
